@@ -1,0 +1,19 @@
+name: simple_resume_parser_dev
+
+services:
+  simple_resume_parser_dev:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: simple_resume_parser_dev
+    image: auto_description_api_image
+    # Point to the .env file in the repo root
+    env_file:
+      - ../.env
+    environment:
+      - API_AUTO_START=false
+    ports:
+      - "8001:8001"
+    volumes:
+      # Map the repo root into /app inside the container
+      - ../:/app

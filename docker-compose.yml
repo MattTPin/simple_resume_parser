@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  simple_resume_parser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: simple_resume_parser
+    image: simple_resume_parser_image
+    env_file: .env
+    environment:
+      - API_AUTO_START=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true

@@ -1,0 +1,16 @@
+{
+    "name": "Simple Resume Parser Development VS Code",
+    "dockerComposeFile": "../.devcontainer/docker-compose-dev.yml",
+    "service": "simple_resume_parser_dev",
+    "workspaceFolder": "/app",
+    "forwardPorts": [8001],
+    "remoteUser": "root",
+    "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker"
+    ],
+    "settings": {
+        "python.pythonPath": "/usr/local/bin/python"
+    },
+    "postCreateCommand": "pip install --no-cache-dir -r /app/requirements.txt"
+}

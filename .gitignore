@@ -1,0 +1,10 @@
+*.pyc
+.DS_Store
+.env
+backup
+venv/*
+venv2
+venv2/*
+__pycache__
+logs
+cache
