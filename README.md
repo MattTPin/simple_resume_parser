@@ -142,6 +142,8 @@ ANTHROPIC_API_KEY=<REPLACE_ME>
 
 ## Architecture Overview
 
+![Diagram](https://github.com/user-attachments/assets/fe6351cc-584a-4a77-bcea-9acd5ca4f9f8 "Diagram")
+
 1. **File Parsers**
     - FileParser (abstract base class)
         - The base class that all parsers use.
