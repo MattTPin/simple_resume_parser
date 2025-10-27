@@ -19,6 +19,8 @@ The framework is built with a **pluggable architecture**, featuring abstract bas
 - Fully Dockerized for development and deployment
 - Provides a FastAPI server with Swagger UI for testing and integration
 
+![Diagram](https://github.com/user-attachments/assets/fe6351cc-584a-4a77-bcea-9acd5ca4f9f8 "Diagram")
+
 ---
 
 ## Installation
@@ -60,7 +62,7 @@ Alternatively, open the repo in VS Code → "Reopen in Container" to develop ins
 
 ## API Usage
 
-After launching the docker container you can 
+After launching the docker container you can access the API endpoint at `http://localhost:8000` (or `http://localhost:8001` if running the dev container). You can make curl requests or open up a user interface to interact with (SwaggerUI) by going to http://localhost:8000 which lets you directly upload resumes to parse.
 
 ### Endpoint
 
@@ -141,8 +143,6 @@ ANTHROPIC_API_KEY=<REPLACE_ME>
 ```
 
 ## Architecture Overview
-
-![Diagram](https://github.com/user-attachments/assets/fe6351cc-584a-4a77-bcea-9acd5ca4f9f8 "Diagram")
 
 1. **File Parsers**
     - FileParser (abstract base class)
