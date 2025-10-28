@@ -45,18 +45,28 @@ docker compose -f ./docker-compose.yml up --build
 - **API Base URL:** [http://localhost:8000](http://localhost:8000)
 - **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
-#### 2. Dev Container (VS Code) Mode
+#### 2. Dev Container Mode (i.e. VS Code)
 
-Intended for development and debugging with VS Code. Uses `.devcontainer/docker-compose-dev.yml`:
+Intended for development and debugging and to inter. Uses `.devcontainer/docker-compose-dev.yml` (and the devcontainer config specified in `.devcontainer/devcontainer.json`) to launch the environment.
 
-``` bash
-docker compose -f .devcontainer/docker-compose-dev.yml up
+- In your IDE or terminal, start the dev container using your container management tools (for example, VS Code’s Reopen in Container, JetBrains Docker integration, or `docker compose -f .devcontainer/docker-compose-dev.yml up --build`).
+
+Once the dev container is running, manually launch the server to access the API endpoints:
+```python
+python run_server_local.py
 ```
 
 - **API Base URL:** [http://localhost:8001](http://localhost:8001)
 - **Swagger UI:** [http://localhost:8001/docs](http://localhost:8001/docs)
 
 Alternatively, open the repo in VS Code → "Reopen in Container" to develop inside the container.
+
+### Help
+NOTE: Sometimes Docker can't automatically download the Python base image. If you see an error like `failed to solve: error getting credentials - err:`, manually pull the official Python 3.11 slim image first:
+
+```bash
+docker pull python:3.11-slim
+```
 
 ---
 
