@@ -1,4 +1,4 @@
-version: "3.9"
+name: simple_resume_parser
 
 services:
   simple_resume_parser:

@@ -6,7 +6,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     TZ=UTC \
-    TRANSFORMERS_CACHE=/app/cache \
     HF_HOME=/app/cache \
     API_AUTO_START=true
 
