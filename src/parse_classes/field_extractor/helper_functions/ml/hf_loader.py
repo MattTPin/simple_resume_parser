@@ -7,8 +7,11 @@ from typing import Dict, Optional, Union, Tuple
 import subprocess
 import sys
 
-from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
+from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline, logging
 from transformers.pipelines import Pipeline, AggregationStrategy
+
+# Suppress HuggingFace Warnings 
+logging.set_verbosity_error()
 
 def load_hf_model(
     model_name: str,
