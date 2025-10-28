@@ -14,7 +14,6 @@ distro==1.9.0
 docstring_parser==0.17.0
 docx2txt==0.9
 dotenv==0.9.9
-en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
 fastapi==0.120.0
 filelock==3.20.0
 fsspec==2025.9.0
@@ -92,3 +91,4 @@ weasel==0.4.1
 wrapt==2.0.0
 xxhash==3.6.0
 zstandard==0.25.0
+en-core-web-sm==3.8.0
