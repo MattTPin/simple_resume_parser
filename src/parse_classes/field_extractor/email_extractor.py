@@ -51,7 +51,10 @@ class EmailExtractor(FieldExtractor):
         if not email:
             raise FieldExtractionError(
                 field_name="email",
-                message="Could not extract an email address from the resume",
+                message=(
+                    f"Could not extract an email address from the resume using the "
+                    f"`{self.extraction_method}` extraction method."
+                ),
                 document_chunk_list=self.document_chunk_list,
             )
         return email

@@ -18,7 +18,8 @@ from src.parse_classes.field_extractor.skills_extractor import SkillsExtractor
 # Integrate logger with pytest
 logger = LoggerFactory().get_logger(
     name="pytest_logger",
-    logger_type="pytest"
+    logger_type="pytest",
+    console=True
 )
 current_class = None
 

@@ -27,10 +27,9 @@ from src.parse_classes.resume_extractor.helpers.extractor_map import (
 
 # Load field extraction specific logger
 logger_factory = LoggerFactory()
-extractor_failure_logger = logger_factory.get_logger(
-    name="extractor_failures",
-    logger_type="extractor"
-)
+def get_field_logger(field_name: str):
+    return logger_factory.get_extractor_field_logger(field_name)
+
 
 class ResumeExtractor:
     """
@@ -173,10 +172,9 @@ class ResumeExtractor:
                 result = extractor.extract()
                 return result
             except Exception as e:
-                import traceback
-                print(traceback.format_exc())
                 if not any("pytest" in arg for arg in sys.argv):
-                    extractor_failure_logger.warning(
+                    field_logger = get_field_logger(field_name)
+                    field_logger.warning(
                         f"Field '{field_name}' failed in extractor '{type(extractor).__name__}': {str(e)}"
                     )
                 # Continue to next extractor

@@ -4,84 +4,129 @@ Holds configured loggers.
 from typing import Literal
 import logging
 import os
-from datetime import datetime
 import sys
-
+from datetime import datetime
+from functools import lru_cache
 from dotenv import load_dotenv
 
 load_dotenv()  # load .env
 
 ENV = os.getenv("ENV", "development")  # e.g., development, staging, prod
 
-# --------------------------------------------------------------
-# SETUP LOGGER
-# --------------------------------------------------------------
 LoggerType = Literal["default", "pytest", "extractor", "extractor_error"]
+
 
 class LoggerFactory:
     """
     Factory to create configured loggers for different purposes.
 
     Logging behavior depends on environment (ENV):
-      - Console logging is always enabled.
-      - Local file logging in development with separate folders per logger type.
+      - Console logging is optional.
+      - Local file logging in development (separate folders per logger type).
       - Cloud logging (optional) in staging/production using watchtower.
-      - Timestamped log files prevent overwrites.
-      - Duplicate handlers are avoided automatically.
+      - Duplicate handlers and propagation are avoided automatically.
     """
 
     def __init__(self, env: str = ENV, base_log_folder: str = "logs"):
         self.env = env
         self.base_log_folder = base_log_folder
 
-    def get_logger(self, name: str, logger_type: LoggerType = "default") -> logging.Logger:
+    def get_logger(
+        self,
+        name: str,
+        logger_type: LoggerType = "default",
+        console: bool = True
+    ) -> logging.Logger:
         """
         Create and return a configured logger based on type.
-
-        Args:
-            name (str): Name of the logger.
-            logger_type (LoggerType): Type of logger to create.
-
-        Returns:
-            logging.Logger: Configured logger instance.
         """
         logger = logging.getLogger(name)
-        if logger.hasHandlers():
-            return logger  # prevent duplicate handlers
 
-        # Set logging level
+        # Prevent duplicate handlers
+        if logger.hasHandlers():
+            return logger
+
+        # Disable propagation to root logger
+        logger.propagate = False
+
+        # Set log level
         level = logging.DEBUG if logger_type in ["default", "pytest"] else logging.INFO
         logger.setLevel(level)
 
         formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
-        # Console handler
-        ch = logging.StreamHandler()
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
+        # Optional console handler
+        if console:
+            ch = logging.StreamHandler()
+            ch.setFormatter(formatter)
+            logger.addHandler(ch)
 
-        # Development file logging
-        if self.env == "development":
+        # File logging (always available in development)
+        if self.env in ["development", "local", "test"]:
             log_folder = self._get_log_folder_for_type(logger_type)
             os.makedirs(log_folder, exist_ok=True)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             log_file_path = os.path.join(log_folder, f"{name}_{timestamp}.log")
-            fh = logging.FileHandler(log_file_path)
+            fh = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
             fh.setFormatter(formatter)
             logger.addHandler(fh)
 
-        # Cloud logging for staging/production
-        # if self.env in ["staging", "production"]:
-        #     self._add_cloudwatch_handler(logger, logger_type, formatter)
+        # CloudWatch handler for staging/production
+        elif self.env in ["staging", "production"]:
+            self._add_cloudwatch_handler(logger, logger_type, formatter)
+
+        # Safety: ensure at least one handler exists
+        if not logger.handlers:
+            ch = logging.StreamHandler()
+            ch.setFormatter(formatter)
+            logger.addHandler(ch)
+
+        return logger
+
+    @lru_cache(maxsize=None)
+    def get_extractor_field_logger(self, field_name: str) -> logging.Logger:
+        """
+        Return a field-specific extractor logger that writes to a subfolder.
+        Example:
+            logs/extraction_failures/name/name_20251028_103022.log
+            logs/extraction_failures/skills/skills_20251028_103022.log
+        """
+        safe_field_name = field_name or "other"
+
+        logger = logging.getLogger(f"extractor_{safe_field_name}")
+
+        # Prevent duplicate handlers (esp. if re-requested)
+        if logger.hasHandlers():
+            return logger
+
+        logger.setLevel(logging.INFO)
+        logger.propagate = False  # do not print to console
+
+        # Create subfolder for the field
+        log_folder = os.path.join(
+            self.base_log_folder, "extraction_failures", safe_field_name
+        )
+        os.makedirs(log_folder, exist_ok=True)
+
+        # Use timestamped filename to avoid overwrite
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file_path = os.path.join(
+            log_folder, f"{safe_field_name}_{timestamp}.log"
+        )
+
+        formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+
+        fh = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
 
         return logger
 
     def _get_log_folder_for_type(self, logger_type: LoggerType) -> str:
-        """
-        Return folder path based on logger type.
-        """
+        """Return folder path based on logger type."""
         if any("pytest" in arg for arg in sys.argv):
             return os.path.join(self.base_log_folder, "tests")
+
         mapping = {
             "default": self.base_log_folder,
             "pytest": os.path.join(self.base_log_folder, "tests"),
@@ -90,19 +135,25 @@ class LoggerFactory:
         }
         return mapping.get(logger_type, self.base_log_folder)
 
-    # def _add_cloudwatch_handler(self, logger: logging.Logger, logger_type: LoggerType, formatter: logging.Formatter):
-    #     """
-    #     Optional AWS CloudWatch logging for staging/production.
-    #     """
-    #     try:
-    #         import watchtower
-    #         log_group = "default_logs"
-    #         if logger_type == "extractor":
-    #             log_group = "extractor_logs"
-    #         elif logger_type == "extractor_error":
-    #             log_group = "extractor_error_logs"
-    #         aws_handler = watchtower.CloudWatchLogHandler(log_group=log_group)
-    #         aws_handler.setFormatter(formatter)
-    #         logger.addHandler(aws_handler)
-    #     except ImportError:
-    #         logger.warning("watchtower not installed, skipping cloud logging.")
+    def _add_cloudwatch_handler(
+        self,
+        logger: logging.Logger,
+        logger_type: LoggerType,
+        formatter: logging.Formatter,
+    ):
+        """Optional AWS CloudWatch logging for staging/production."""
+        try:
+            import watchtower
+
+            log_group = {
+                "default": "default_logs",
+                "extractor": "extractor_logs",
+                "extractor_error": "extractor_error_logs",
+            }.get(logger_type, "default_logs")
+
+            aws_handler = watchtower.CloudWatchLogHandler(log_group=log_group)
+            aws_handler.setFormatter(formatter)
+            logger.addHandler(aws_handler)
+
+        except ImportError:
+            logger.warning("watchtower not installed, skipping cloud logging.")
