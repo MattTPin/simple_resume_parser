@@ -2,11 +2,12 @@
 Server to launch a FastAPI / Swagger UI instance.
 """
 import os
+
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, HttpUrl
-import tempfile
+from contextlib import asynccontextmanager
+from pydantic import BaseModel
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
 
 from src.config import SCANNER_DEFAULTS
 from src.models import ResumeData
