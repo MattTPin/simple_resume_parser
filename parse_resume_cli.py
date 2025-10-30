@@ -2,11 +2,14 @@
 Run ResumeParserFramework from the command like.
 Example: `python parse_resume_cli.py path/to/resume.pdf`
 """
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
 
 import sys
 from dataclasses import dataclass, field
 from typing import List, Optional
-from src.parse_classes.resume_parse_framework import ResumeParserFramework
+from src.parse_classes.resume_parser_framework import ResumeParserFramework
 
 @dataclass
 class ResumeData:
@@ -26,10 +29,10 @@ def main():
     file_path = sys.argv[1]
 
     # Initialize the parser
-    resume_parse_framework = ResumeParserFramework()
+    resume_parser_framework = ResumeParserFramework()
 
     # Parse the resume
-    resume_data: ResumeData = resume_parse_framework.parse_resume(file_path)
+    resume_data: ResumeData = resume_parser_framework.parse_resume(file_path)
 
     # Print the results
     print("Resume Parsing Result:")

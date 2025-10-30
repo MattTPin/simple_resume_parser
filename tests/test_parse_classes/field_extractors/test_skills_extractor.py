@@ -20,8 +20,6 @@ from src.test_helpers.dummy_variables.dummy_chunk_lists import(
     MOCK_RESUME_GENERATOR_2
 )
 
-# TODO: PASS IN LLM CLIENT AND MODELS
-
 # ---------------------------------------------------------------------------
 # Test suite for SkillsExtractor
 # ---------------------------------------------------------------------------

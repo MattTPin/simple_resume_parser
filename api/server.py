@@ -11,7 +11,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 
 from src.config import SCANNER_DEFAULTS
 from src.models import ResumeData
-from src.parse_classes.resume_parse_framework import ResumeParserFramework
+from src.parse_classes.resume_parser_framework import ResumeParserFramework
 
 
 app = FastAPI(title="Simple Resume Parser API", version="1.0")
@@ -20,7 +20,7 @@ class ParseResumeInputs(BaseModel):
     file: str
 
 # Initiate ResumeParserFramework for use when server calls
-resume_parse_framework = ResumeParserFramework()
+resume_parser_framework = ResumeParserFramework()
 
 @app.post(
     "/parse_resume",
@@ -50,7 +50,7 @@ async def parse_resume(file: UploadFile = File(...)) -> ResumeData:
 
     try:
         # ---- Run parsing pipeline ----
-        resume_data = resume_parse_framework.parse_resume(file_path=temp_path)
+        resume_data = resume_parser_framework.parse_resume(file_path=temp_path)
 
         # ---- Validate return type ----
         if not isinstance(resume_data, ResumeData):

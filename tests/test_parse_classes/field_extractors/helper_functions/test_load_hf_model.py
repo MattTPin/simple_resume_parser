@@ -114,7 +114,7 @@ class TestLoadHFModel:
 class TestPreloadHFModels:
     """Test suite for preload_hf_models()."""
 
-    def test_preloads_all_required_models(self, mocker, get_dummy_hf_pipeline):
+    def test_preloads_all_REQUIRED_ML_MODELS(self, mocker, get_dummy_hf_pipeline):
         """Ensure all HF models for the extractor's method are loaded."""
         extractor = DummyExtractor(extraction_method="llm")
         cache = {}
@@ -159,10 +159,10 @@ class TestPreloadHFModels:
         assert cache == {}
         mock_hf_pipeline.assert_not_called()
 
-    def test_handles_empty_required_models_dict(self, mock_hf_pipeline):
-        """If REQUIRED_MODELS empty or missing keys, should not crash."""
+    def test_handles_empty_REQUIRED_ML_MODELS_dict(self, mock_hf_pipeline):
+        """If REQUIRED_ML_MODELS empty or missing keys, should not crash."""
         extractor = DummyExtractor()
-        extractor.REQUIRED_MODELS = {}
+        extractor.REQUIRED_ML_MODELS = {}
         cache = {}
 
         preload_hf_models(extractor, cache)

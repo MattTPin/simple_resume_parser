@@ -96,7 +96,10 @@ class FieldExtractionError(Exception):
             chunks_display = "\n".join(
                 f"- {chunk}" for chunk in self.document_chunk_list
             )
-            base_message += f"\n\nDocument Chunks:\n{chunks_display}"
+            base_message += (
+                f"\nDocument Chunks:\n{chunks_display}\n"
+                "---------------------------------------------------------------------------------------------"
+            )
         return base_message
     
 class FieldExtractionConfigError(Exception):

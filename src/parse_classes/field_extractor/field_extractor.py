@@ -18,7 +18,6 @@ from src.parse_classes.field_extractor.helper_functions.llm.llm_helpers import i
 EXTRACTION_METHODS = Literal[
     "regex",
     "ner",
-    "ml",
     "llm",
     "rule"
 ]
@@ -41,9 +40,9 @@ class FieldExtractor(ABC):
     
     # Define which models are required to run different extraction methods (define in each child)
     # Retrieved when pre-loading models.
-    REQUIRED_MODELS = {}
+    REQUIRED_ML_MODELS = {}
     # Example:
-        # REQUIRED_MODELS = {
+        # REQUIRED_ML_MODELS = {
         #     "ner": {
         #         "spacy": ["en_core_web_sm"],
         #         "hf": [],
@@ -62,17 +61,7 @@ class FieldExtractor(ABC):
             r"\d{3}[\s.-]?\d{4}"              # Local number
         )
     }
-    
-    # Regex to search for "skills" section with
-    SKILLS_REGEX = [
-        r"\bskills\b",
-        r"\btools\b",
-        r"\bexpertise\b",
-        r"\btechnologies\b",
-        r"\bstrengths\b",
-        r"\bsoftware\b",
-        r"\bprogramming languages\b",
-    ]
+
 
     def __init__(
         self,
@@ -83,9 +72,6 @@ class FieldExtractor(ABC):
         llm_dummy_response: Optional[Any] = None,
         loaded_spacy_models: Optional[Dict[str, "spacy.language.Language"]] = None,
         loaded_hf_models: Optional[Dict[str, "transformers.pipelines.Pipeline"]] = None
-        # Possible argument to have Extractors return empty values instead of raising errors when they fail
-        # (better for bulk processing)
-        # soft_mode: bool = False 
     ):
         """
         Args:

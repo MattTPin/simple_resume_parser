@@ -79,7 +79,7 @@ def preload_hf_models(
     Preload all HuggingFace models required for a FieldExtractor to run with its
     current extraction_method and assign them to loaded_hf_models.
         - Checks the field_extractor's self.extraction_method.
-        - Reads REQUIRED_MODELS from the child class for HuggingFace model names.
+        - Reads REQUIRED_ML_MODELS from the child class for HuggingFace model names.
         - Loads any HuggingFace models not already in loaded_hf_models.
         - Updates the provided loaded_hf_models dictionary.
 
@@ -93,9 +93,9 @@ def preload_hf_models(
     if method is None:
         return loaded_hf_models
 
-    # Get list of REQUIRED_MODELS for the current field_extractor based on it's extraction_method
-    required_models = getattr(field_extractor, "REQUIRED_MODELS", {}).get(method, {})
-    hf_models = required_models.get("hf", [])
+    # Get list of REQUIRED_ML_MODELS for the current field_extractor based on it's extraction_method
+    REQUIRED_ML_MODELS = getattr(field_extractor, "REQUIRED_ML_MODELS", {}).get(method, {})
+    hf_models = REQUIRED_ML_MODELS.get("hf", [])
 
     # Load any required HuggingFace models (if not already in cache)
     for model_name in hf_models:

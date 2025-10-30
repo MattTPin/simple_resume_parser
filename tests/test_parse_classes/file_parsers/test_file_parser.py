@@ -6,6 +6,7 @@ Comprehensive test suite for:
 import os
 import pytest
 
+from src.config import SCANNER_DEFAULTS
 from src.exceptions import FileTooLargeError, FileEmptyError
 
 from src.test_helpers.file_parsing import DummyTxtParser
@@ -45,10 +46,12 @@ class TestFileParser:
         """Valid file with supported extension and size passes."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("some content")
+
         parser = DummyTxtParser(str(test_file))
+
         assert parser.file_path == str(test_file)
-        assert parser.chunk_size is None
-        assert parser.max_file_size_mb is None
+        assert parser.chunk_size == SCANNER_DEFAULTS.CHUNK_SIZE
+        assert parser.max_file_size_mb == SCANNER_DEFAULTS.MAX_FILE_SIZE_MB
 
     def test_pathlib_path_works(self, tmp_path):
         """Passing a Path object is allowed and stored correctly."""

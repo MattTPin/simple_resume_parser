@@ -72,7 +72,7 @@ class TestFieldExtractorInit:
     def test_unsupported_extraction_method_raises(self):
         """Ensure that providing an unsupported extraction method raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
-            DummyExtractor(extraction_method="ml")
+            DummyExtractor(extraction_method="rule")
 
 
     def test_missing_supported_methods_raises(self, monkeypatch):

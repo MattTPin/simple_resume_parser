@@ -22,7 +22,7 @@ from src.exceptions import (
     LLMQueryError,
     LLMEmptyResponse
 )
-from src.test_helpers.llm_client_test_helpers import ( # TODO FIX
+from src.test_helpers.llm_client_test_helpers import (
     create_mock_llm_response
 )
 

@@ -7,6 +7,7 @@ import os
 from typing import List
 from abc import ABC, abstractmethod
 
+from src.config import SCANNER_DEFAULTS
 from src.models import DocumentChunk
 from src.exceptions import FileTooLargeError, FileEmptyError
 
@@ -42,8 +43,8 @@ class FileParser(ABC):
     def __init__(
         self,
         file_path: str,
-        chunk_size: int | None = None,
-        max_file_size_mb: float | None = None
+        chunk_size: int | None = SCANNER_DEFAULTS.CHUNK_SIZE,
+        max_file_size_mb: float | None = SCANNER_DEFAULTS.MAX_FILE_SIZE_MB
     ):
         self.file_path = file_path
         self.chunk_size = chunk_size

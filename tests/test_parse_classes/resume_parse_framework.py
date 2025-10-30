@@ -27,7 +27,7 @@ from src.parse_classes.field_extractor.skills_extractor import SkillsExtractor
 
 from src.parse_classes.resume_extractor.resume_extractor import ResumeExtractor
 
-from src.parse_classes.resume_parse_framework import ResumeParserFramework
+from parse_classes.resume_parser_framework import ResumeParserFramework
 
 from src.test_helpers.file_parsing import (
     list_files,
@@ -36,7 +36,7 @@ from src.test_helpers.file_parsing import (
 )
 
 # Import entire files (for patching in tests)
-from src.parse_classes import resume_parse_framework
+from parse_classes import resume_parser_framework
 from src.parse_classes.field_extractor.helper_functions.llm import llm_helpers
 from src.parse_classes.field_extractor.helper_functions.llm import llm_client
 from src.parse_classes.field_extractor.helper_functions.ml import spacy_loader
@@ -320,7 +320,7 @@ class TestResumeParserFrameworkBasic:
             }
         )
         mock_init = mocker.patch.object(
-            resume_parse_framework,
+            resume_parser_framework,
             "initialize_llm_if_needed",
             return_value=LLMClient()
         )

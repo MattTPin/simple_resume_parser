@@ -21,7 +21,19 @@ class SkillsExtractor(FieldExtractor):
     SUPPORTED_EXTRACTION_METHODS = ["llm"]
     DEFAULT_EXTRACTION_METHOD = "llm"
     
-    REQUIRED_MODELS = {}
+    # No required ML models
+    REQUIRED_ML_MODELS = {}
+    
+    # Regex to search for "skills" section with
+    SKILLS_REGEX = [
+        r"\bskills\b",
+        r"\btools\b",
+        r"\bexpertise\b",
+        r"\btechnologies\b",
+        r"\bstrengths\b",
+        r"\bsoftware\b",
+        r"\bprogramming languages\b",
+    ]
 
     def extract(self) -> List[str]:
         """

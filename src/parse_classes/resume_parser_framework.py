@@ -1,4 +1,4 @@
-"""resume_parse_framework.py
+"""resume_parser_framework.py
 Holds framework to orchestrate operation of FileParser() and ResumeExtractor()
 and return ResumeData.
 """

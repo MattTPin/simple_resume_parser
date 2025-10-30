@@ -19,8 +19,6 @@ from src.test_helpers.dummy_variables.dummy_chunk_lists import(
     MOCK_PERSONS
 )
 
-# TODO: PASS IN LLM CLIENT AND MODELS
-
 # ---------------------------------------------------------------------------
 # Tests for EmailExtractor
 # ---------------------------------------------------------------------------

@@ -133,19 +133,20 @@ python parse_resume_cli.py <file_path>
 
 Replace <file_path> with the path to the resume file you want to parse (.pdf or .docx). The script will print the extracted name, email, and skills directly to the terminal.
 
-Example
+Example:
+Note that this example uses a file included with this repo so it's great for testing!
 
 ``` bash
-python parse_resume_cli.py resumes/jane_doe.pdf
+python parse_resume_cli.py test_documents/test_pdfs/classic-ms-word-resume-template.pdf
 ```
 
 Output:
 
 ``` plaintext
 Resume Parsing Result:
-Name: Jane Doe
-Email: jane.doe@gmail.com
-Skills: Python, Machine Learning, LLM
+Name: DEVIKA PATEL
+Email: dev.patel@email.com
+Skills: Microsoft Suite, Organization, Time Management, Written/Verbal Communication, Creativity, Collaboration, Critical Thinking, Compassion
 ```
 
 ## .env File for LLM Client IDs

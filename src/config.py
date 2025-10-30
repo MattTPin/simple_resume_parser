@@ -19,7 +19,7 @@ class ScannerDefaults:
             "description": "Size of each chunk in characters"
     })
     MAX_FILE_SIZE_MB: float = field(
-        default = 5.0,
+        default = 25.0,
         metadata = {
             "description": "Maximum allowed file size in MB"
     })

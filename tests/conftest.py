@@ -6,11 +6,6 @@ import pytest
 from src.logging import LoggerFactory
 from src.conftest_helpers import apply_mock_llm_patch
 
-from src.parse_classes.field_extractor.field_extractor import FieldExtractor
-from src.parse_classes.field_extractor.name_extractor import NameExtractor
-from src.parse_classes.field_extractor.email_extractor import EmailExtractor
-from src.parse_classes.field_extractor.skills_extractor import SkillsExtractor
-
 # --------------------------------------------------------------
 # SETUP TEST LOGGING
 # --------------------------------------------------------------

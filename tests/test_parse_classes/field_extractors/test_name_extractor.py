@@ -182,216 +182,216 @@ NAME_EXAMPLE_RESUME_DECORATED = MOCK_RESUME_GENERATOR_0.clone(
 ).generate()
 
 
-# class TestNameExtractor:
-#     """Unit tests for NameExtractor using LLM-aware test modes."""
+class TestNameExtractor:
+    """Unit tests for NameExtractor using LLM-aware test modes."""
 
-#     # -----------------------------------------------------------------
-#     # Unsupported extraction method
-#     # -----------------------------------------------------------------
-#     def test_invalid_extraction_method_raises_not_implemented(self):
-#         """Providing an unsupported method raises NotImplementedError."""
-#         document_chunk_list = [DocumentChunk(chunk_index=0, text="John Doe\nSoftware Engineer")]
-#         with pytest.raises(NotImplementedError):
-#             NameExtractor(
-#                 document_chunk_list=document_chunk_list,
-#                 extraction_method="unsupported_method"
-#             ).extract()
+    # -----------------------------------------------------------------
+    # Unsupported extraction method
+    # -----------------------------------------------------------------
+    def test_invalid_extraction_method_raises_not_implemented(self):
+        """Providing an unsupported method raises NotImplementedError."""
+        document_chunk_list = [DocumentChunk(chunk_index=0, text="John Doe\nSoftware Engineer")]
+        with pytest.raises(NotImplementedError):
+            NameExtractor(
+                document_chunk_list=document_chunk_list,
+                extraction_method="unsupported_method"
+            ).extract()
 
-#     # -----------------------------------------------------------------
-#     # Extraction should raise error if no name present
-#     # -----------------------------------------------------------------
-#     def test_no_name_raises_field_extraction_error(self):
-#         """Extraction should raise FieldExtractionError if no name found."""
-#         document_chunk_list = [DocumentChunk(chunk_index=0, text="No name here\nJust text")]
-#         extractor = NameExtractor(
-#             document_chunk_list=document_chunk_list,
-#             extraction_method="ner"
-#         )
-#         with pytest.raises(FieldExtractionError):
-#             extractor.extract()
+    # -----------------------------------------------------------------
+    # Extraction should raise error if no name present
+    # -----------------------------------------------------------------
+    def test_no_name_raises_field_extraction_error(self):
+        """Extraction should raise FieldExtractionError if no name found."""
+        document_chunk_list = [DocumentChunk(chunk_index=0, text="No name here\nJust text")]
+        extractor = NameExtractor(
+            document_chunk_list=document_chunk_list,
+            extraction_method="ner"
+        )
+        with pytest.raises(FieldExtractionError):
+            extractor.extract()
             
-#     # -----------------------------------------------------------------
-#     # Confirm models are not retained after extraction
-#     # -----------------------------------------------------------------
-#     def test_models_are_not_retained_after_ner_extraction(self):
-#         """Ensure that loaded_spacy_models and loaded_hf_models are cleared after extraction."""
-#         document_chunk_list = [DocumentChunk(chunk_index=0, text="John Doe\nSoftware Engineer")]
-#         extractor = NameExtractor(
-#             document_chunk_list=document_chunk_list,
-#             extraction_method="ner"
-#         )
-#         try:
-#             extractor.extract()
-#         except FieldExtractionError:
-#             # We don’t care if extraction fails; we only want to test model cleanup
-#             pass
+    # -----------------------------------------------------------------
+    # Confirm models are not retained after extraction
+    # -----------------------------------------------------------------
+    def test_models_are_not_retained_after_ner_extraction(self):
+        """Ensure that loaded_spacy_models and loaded_hf_models are cleared after extraction."""
+        document_chunk_list = [DocumentChunk(chunk_index=0, text="John Doe\nSoftware Engineer")]
+        extractor = NameExtractor(
+            document_chunk_list=document_chunk_list,
+            extraction_method="ner"
+        )
+        try:
+            extractor.extract()
+        except FieldExtractionError:
+            # We don’t care if extraction fails; we only want to test model cleanup
+            pass
 
-#         # Confirm that the extractor has loaded models
-#         assert extractor.loaded_spacy_models is None
-#         assert extractor.loaded_hf_models is None
+        # Confirm that the extractor has loaded models
+        assert extractor.loaded_spacy_models is None
+        assert extractor.loaded_hf_models is None
 
 
-# @pytest.mark.usefixtures("USE_MOCK_LLM_RESPONSE_SETTING")
-# class TestNameExtractorMockLlmModeAware:
-#     # -----------------------------------------------------------------
-#     # Simple example resumes
-#     # -----------------------------------------------------------------
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     @pytest.mark.parametrize(
-#         "document_chunk_list,expected",
-#         [
-#             (EXAMPLE_RESUME_SIMPLE_0, "John Doe"),
-#             (EXAMPLE_RESUME_SIMPLE_1, "Carlos Mendez"),
-#             (EXAMPLE_RESUME_SIMPLE_2, "Alice Lee"),
-#         ],
-#     )
-#     def test_simple_resumes(self, extraction_method, document_chunk_list, expected):
-#         result = run_name_extraction_test(
-#             document_chunk_list=document_chunk_list,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": expected},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, expected)
+@pytest.mark.usefixtures("USE_MOCK_LLM_RESPONSE_SETTING")
+class TestNameExtractorMockLlmModeAware:
+    # -----------------------------------------------------------------
+    # Simple example resumes
+    # -----------------------------------------------------------------
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    @pytest.mark.parametrize(
+        "document_chunk_list,expected",
+        [
+            (EXAMPLE_RESUME_SIMPLE_0, "John Doe"),
+            (EXAMPLE_RESUME_SIMPLE_1, "Carlos Mendez"),
+            (EXAMPLE_RESUME_SIMPLE_2, "Alice Lee"),
+        ],
+    )
+    def test_simple_resumes(self, extraction_method, document_chunk_list, expected):
+        result = run_name_extraction_test(
+            document_chunk_list=document_chunk_list,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": expected},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, expected)
 
-#     # -----------------------------------------------------------------
-#     # Edge case tests
-#     # -----------------------------------------------------------------
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_name_with_noise(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_NOISE,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    # -----------------------------------------------------------------
+    # Edge case tests
+    # -----------------------------------------------------------------
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_name_with_noise(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_NOISE,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_lowercase_name(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_LOWERCASE,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "john doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_lowercase_name(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_LOWERCASE,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "john doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_uppercase_name(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_UPPERCASE,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "JOHN DOE"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_uppercase_name(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_UPPERCASE,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "JOHN DOE"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_non_english_name(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_NON_ENGLISH,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "Nguyễn Văn An"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "Nguyễn Văn An")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_non_english_name(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_NON_ENGLISH,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "Nguyễn Văn An"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "Nguyễn Văn An")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_no_name_present(self, extraction_method):
-#         # We still want this test to explicitly check for FieldExtractionError
-#         extractor = NameExtractor(
-#             loaded_spacy_models=LOADED_SPACY_MODELS,
-#             loaded_hf_models=LOADED_HF_MODELS,
-#             document_chunk_list=NAME_EXAMPLE_RESUME_NO_NAME,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": ""},
-#         )
-#         with pytest.raises(FieldExtractionError):
-#             extractor.extract()
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_no_name_present(self, extraction_method):
+        # We still want this test to explicitly check for FieldExtractionError
+        extractor = NameExtractor(
+            loaded_spacy_models=LOADED_SPACY_MODELS,
+            loaded_hf_models=LOADED_HF_MODELS,
+            document_chunk_list=NAME_EXAMPLE_RESUME_NO_NAME,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": ""},
+        )
+        with pytest.raises(FieldExtractionError):
+            extractor.extract()
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_name_buried_far_down(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_BURIED,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_name_buried_far_down(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_BURIED,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_multiple_names(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_MULTIPLE_NAMES,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_multiple_names(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_MULTIPLE_NAMES,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_repeated_name(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_REPEATE_NAME,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe."},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe.")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_repeated_name(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_REPEATE_NAME,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe."},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe.")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_name_split_across_lines(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_SPLIT,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_name_split_across_lines(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_SPLIT,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     def test_decorated_name(self, extraction_method):
-#         result = run_name_extraction_test(
-#             document_chunk_list=NAME_EXAMPLE_RESUME_DECORATED,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": "John Doe"},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, "John Doe")
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    def test_decorated_name(self, extraction_method):
+        result = run_name_extraction_test(
+            document_chunk_list=NAME_EXAMPLE_RESUME_DECORATED,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": "John Doe"},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, "John Doe")
 
-#     # -----------------------------------------------------------------
-#     # Test with all MOCK_PERSONS
-#     # -----------------------------------------------------------------
-#     @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
-#     @pytest.mark.parametrize("person", MOCK_PERSONS)
-#     def test_mock_persons(self, extraction_method, person):
-#         document_chunk_list = MOCK_RESUME_GENERATOR_0.clone(
-#             chunk_values=ChunkValues(
-#                 name=person["name"],
-#                 email=person["email"],
-#                 linkedin_name=person["linkedin_name"],
-#             )
-#         ).generate()
+    # -----------------------------------------------------------------
+    # Test with all MOCK_PERSONS
+    # -----------------------------------------------------------------
+    @pytest.mark.parametrize("extraction_method", NameExtractor.SUPPORTED_EXTRACTION_METHODS)
+    @pytest.mark.parametrize("person", MOCK_PERSONS)
+    def test_mock_persons(self, extraction_method, person):
+        document_chunk_list = MOCK_RESUME_GENERATOR_0.clone(
+            chunk_values=ChunkValues(
+                name=person["name"],
+                email=person["email"],
+                linkedin_name=person["linkedin_name"],
+            )
+        ).generate()
         
-#         result = run_name_extraction_test(
-#             document_chunk_list=document_chunk_list,
-#             extraction_method=extraction_method,
-#             llm_dummy_response={"full_name": person["name"]},
-#         )
-#         if result:
-#             assert isinstance(result, str)
-#             assert_name_similarity(result, person["name"])
+        result = run_name_extraction_test(
+            document_chunk_list=document_chunk_list,
+            extraction_method=extraction_method,
+            llm_dummy_response={"full_name": person["name"]},
+        )
+        if result:
+            assert isinstance(result, str)
+            assert_name_similarity(result, person["name"])
 
 
 class TestNameExtractorNERResult:

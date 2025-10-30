@@ -20,7 +20,7 @@ class EmailExtractor(FieldExtractor):
     SUPPORTED_EXTRACTION_METHODS = ["regex", "rule"]
     DEFAULT_EXTRACTION_METHOD = "regex"
     
-    REQUIRED_MODELS = {
+    REQUIRED_ML_MODELS = {
         "rule": {
             "spacy": ["en_core_web_sm"],
             "hf": [],

@@ -54,7 +54,7 @@ def build_default_extractor_map(
         }
     """
     # Updated mapping: each field maps to a list of dicts with 'model' and optional 'extraction_method'
-    default_extractor_classes_map = {
+    DEFAULT_EXTRACTOR_CLASSES_MAP = {
         "name": [
             {"model": NameExtractor, "extraction_method": "ner"},
             {"model": NameExtractor, "extraction_method": "llm"},
@@ -70,7 +70,7 @@ def build_default_extractor_map(
     # Determine if LLM client is needed
     requires_llm = any(
         entry.get("extraction_method") == "llm"
-        for field_list in default_extractor_classes_map.values()
+        for field_list in DEFAULT_EXTRACTOR_CLASSES_MAP.values()
         for entry in field_list
     )
     if requires_llm:
@@ -78,7 +78,7 @@ def build_default_extractor_map(
             llm_client=llm_client,
             extraction_class_list=[
                 entry["model"]
-                for field_list in default_extractor_classes_map.values()
+                for field_list in DEFAULT_EXTRACTOR_CLASSES_MAP.values()
                 for entry in field_list
             ]
         )
@@ -94,7 +94,7 @@ def build_default_extractor_map(
 
     # Instantiate extractors
     extractor_map = {}
-    for field, entries in default_extractor_classes_map.items():
+    for field, entries in DEFAULT_EXTRACTOR_CLASSES_MAP.items():
         extractor_map[field] = []
         for entry in entries:
             model_cls = entry["model"]

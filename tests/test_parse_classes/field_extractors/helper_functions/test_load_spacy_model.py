@@ -76,20 +76,17 @@ class TestLoadSpacyModel:
         assert cache["en_core_web_sm"] is get_dummy_spacy_nlp
         assert result is get_dummy_spacy_nlp
 
-    def test_installation_fails_raises_runtimeerror(
-        self, mock_is_spacy_package_missing, mock_spacy_subprocess_run, mock_spacy_load, mocker
+    def test_model_load_fails_raises_runtimeerror(
+        self, mock_is_spacy_package_missing, mock_spacy_load, mocker
     ):
-        """If subprocess.run() fails, raise RuntimeError."""
+        """If model is not installed, raise RuntimeError."""
         mocker.patch("builtins.input", return_value="y")
 
-        # Simulate subprocess failure using the right exception type
-        mock_spacy_subprocess_run.side_effect = subprocess.CalledProcessError(
-            returncode=1, cmd=["python", "-m", "spacy", "download", "en_core_web_sm"]
-        )
+        # Simulate model not being installed
+        mock_is_spacy_package_missing.return_value = False  # Simulate that is_package() returns False
 
-        with pytest.raises(RuntimeError, match="Failed to download SpaCy model"):
+        with pytest.raises(RuntimeError, match="SpaCy model 'en_core_web_sm' is not installed"):
             load_spacy_model("en_core_web_sm", {})
-
 
     def test_load_fails_raises_runtimeerror(self, mock_is_spacy_package_installed, mocker):
         """If spacy.load() raises an exception, wrap in RuntimeError."""
@@ -106,7 +103,7 @@ class TestLoadSpacyModel:
 class TestPreloadSpacyModels:
     """Test suite for preload_spacy_models()."""
 
-    def test_preloads_all_required_models(self, mock_spacy_load, mock_is_spacy_package_installed, get_dummy_spacy_nlp):
+    def test_preloads_all_REQUIRED_ML_MODELS(self, mock_spacy_load, mock_is_spacy_package_installed, get_dummy_spacy_nlp):
         """Ensure all SpaCy models for the extractor's method are loaded."""
         extractor = DummyExtractor(extraction_method="llm")
         cache = {}
@@ -140,10 +137,10 @@ class TestPreloadSpacyModels:
         assert cache == {}
         mock_spacy_load.assert_not_called()
 
-    def test_handles_empty_required_models_dict(self, mock_spacy_load):
-        """If REQUIRED_MODELS empty or missing keys, should not crash."""
+    def test_handles_empty_REQUIRED_ML_MODELS_dict(self, mock_spacy_load):
+        """If REQUIRED_ML_MODELS empty or missing keys, should not crash."""
         extractor = DummyExtractor()
-        extractor.REQUIRED_MODELS = {}
+        extractor.REQUIRED_ML_MODELS = {}
         cache = {}
 
         preload_spacy_models(extractor, cache)

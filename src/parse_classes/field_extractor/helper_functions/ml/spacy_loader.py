@@ -38,13 +38,7 @@ def load_spacy_model(
 
     # Check if package is installed
     if not is_package(model_name):
-        try:
-            subprocess.run(
-                [sys.executable, "-m", "spacy", "download", model_name],
-                check=True,
-            )
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Failed to download SpaCy model '{model_name}': {e}")
+        raise RuntimeError(f"SpaCy model '{model_name}' is not installed. Install using pip")
 
     # Load model
     try:
@@ -72,7 +66,7 @@ def preload_spacy_models(
 
     Behavior:
         - Checks the field_extractor's self.extraction_method.
-        - Reads REQUIRED_MODELS from the child class.
+        - Reads REQUIRED_ML_MODELS from the child class.
         - Loads any SpaCy models not already in loaded_spacy_models.
         - Returns the updated loaded_spacy_models dictionary.
     """
@@ -81,9 +75,9 @@ def preload_spacy_models(
     if method is None:
         return loaded_spacy_models
 
-    # Get list of REQUIRED_MODELS for the current field_extractor based on it's extraction_method
-    required_models = getattr(field_extractor, "REQUIRED_MODELS", {}).get(method, {})
-    spacy_models = required_models.get("spacy", [])
+    # Get list of REQUIRED_ML_MODELS for the current field_extractor based on it's extraction_method
+    REQUIRED_ML_MODELS = getattr(field_extractor, "REQUIRED_ML_MODELS", {}).get(method, {})
+    spacy_models = REQUIRED_ML_MODELS.get("spacy", [])
 
     # Load the model if it isn't already pre-loaded
     for model_name in spacy_models:

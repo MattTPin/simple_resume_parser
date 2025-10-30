@@ -10,7 +10,7 @@ class DummyExtractor(FieldExtractor):
     SUPPORTED_EXTRACTION_METHODS = ["regex", "llm", "ner"]
     DEFAULT_EXTRACTION_METHOD = "regex"
     
-    REQUIRED_MODELS = {
+    REQUIRED_ML_MODELS = {
         "llm": {
             "spacy": ["en_core_web_sm"],
             "hf": ["dslim/bert-base-NER"]

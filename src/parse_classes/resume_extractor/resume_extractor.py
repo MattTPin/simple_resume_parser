@@ -17,13 +17,10 @@ from src.parse_classes.field_extractor.helper_functions.validate_document_chunk_
 )
 from src.parse_classes.field_extractor.field_extractor import FieldExtractor
 
-from src.parse_classes.field_extractor.name_extractor import NameExtractor
-from src.parse_classes.field_extractor.email_extractor import EmailExtractor
-from src.parse_classes.field_extractor.skills_extractor import SkillsExtractor
-
 from src.parse_classes.resume_extractor.helpers.extractor_map import (
     build_default_extractor_map,
 )
+
 
 # Load field extraction specific logger
 logger_factory = LoggerFactory()
