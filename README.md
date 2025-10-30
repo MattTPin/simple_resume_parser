@@ -54,7 +54,13 @@ Uses `docker-compose.yml` in the project root. Launch the API server:
 docker compose -f ./docker-compose.yml up --build
 ```
 
-After a complete build has been 
+After a complete build has been completed you may launch the server again at any time by simply running...
+
+``` bash
+docker compose up
+```
+
+In standard mode this will automatically run a server with API endpoints on your localhost port 8000.
 
 - **API Base URL:** [http://localhost:8000](http://localhost:8000)
 - **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -83,7 +89,6 @@ docker pull python:3.11-slim
 ```
 
 
-
 ## API Usage
 
 After launching the docker container you can access the API endpoint at `http://localhost:8000` (or `http://localhost:8001` if running the dev container). You can make curl requests or open up a user interface to interact with (SwaggerUI) by going to `http://localhost:8000/docs` which lets you directly upload resumes to a UI to perform your extractions.
@@ -100,7 +105,7 @@ POST /parse_resume
 
 ``` bash
 curl -X POST http://localhost:8000/parse_resume \
-    -F "file=@path/to/resume.pdf"
+    -F "file=@path/to/jane_doe_resume.pdf"
 ```
 
 ### Expected JSON Response
