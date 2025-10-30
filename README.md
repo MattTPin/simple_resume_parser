@@ -22,8 +22,15 @@ Check out the full [Simple Resume Parser Wiki](https://github.com/<username>/<re
 - Fully Dockerized for development and deployment
 - Provides a FastAPI server with Swagger UI for testing and integration
 
+## System Architecture
+
 ![Diagram](https://github.com/user-attachments/assets/fe6351cc-584a-4a77-bcea-9acd5ca4f9f8 "Diagram")
 
+More details about the Architecture can be found in the wiki:
+- [File Parsers](https://github.com/MattTPin/simple_resume_parser/wiki/01_File_Parsers)
+- [Field Extractors](https://github.com/MattTPin/simple_resume_parser/wiki/02_Field_Extractors)
+- [Resume Extractor](https://github.com/MattTPin/simple_resume_parser/wiki/03_Resume_Extractor)
+- [Resume Parser Framework](https://github.com/MattTPin/simple_resume_parser/wiki/04_Resume_Parser_Framework)
 
 
 ## Installation
@@ -46,6 +53,8 @@ Uses `docker-compose.yml` in the project root. Launch the API server:
 ``` bash
 docker compose -f ./docker-compose.yml up --build
 ```
+
+After a complete build has been 
 
 - **API Base URL:** [http://localhost:8000](http://localhost:8000)
 - **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -160,20 +169,6 @@ The `.env` file is used to securely store API keys required to query the LLM cli
 ANTHROPIC_API_KEY=<REPLACE_ME>
 ```
 
-## Testing
-
-The project uses **pytest**:
-
-``` bash
-pytest tests/
-```
-
-- Tests cover parser functionality, field extractors, and edge cases
-- LLM-related tests skip automatically if API keys are not set
-- Files in `tests/` are laid out to mirror the functionality in `src`.
-
-
-
 ## Config.py Overview
 
 `config.py` contains default settings used across the `simple_resume_parser` project. These settings are grouped under the `ScannerDefaults` dataclass and provide configurable parameters for file parsing, resume extraction, and LLM client behavior. Below is a description of each setting:
@@ -210,6 +205,38 @@ Import the default settings wherever needed in the project:
 
 ```python
 from config import SCANNER_DEFAULTS
-
 # Access default chunk size
 print(SCANNER_DEFAULTS.CHUNK_SIZE)
+```
+
+More details about `config.py` and `.env` can be found in the wiki: [Config Documentation](https://github.com/MattTPin/simple_resume_parser/wiki/C01_config)
+ 
+
+## Testing
+
+The project uses **pytest**:
+
+``` bash
+pytest tests/
+```
+
+- Tests cover parser functionality, field extractors, and edge cases
+- LLM-related tests skip automatically if API keys are not set
+- Files in `tests/` are laid out to mirror the functionality in `src`.
+
+More details about testing can be found in the wiki: [Testing Documentation](https://github.com/MattTPin/simple_resume_parser/wiki/D01_testing)
+
+
+## Installing ML Models
+
+### Hugging Face / Transformers
+
+- Hugging Face will automatically install models to your environment the first time they are run. They are not included in the docker image to improve build speed.
+
+### Spacy
+
+- `thinc==8.1.12` (required by `transformers==4.57.1` for Hugging Face) forces the use of `numpy<2`, so this project uses `numpy==1.26.4`.
+- Consequently, `spacy==3.6.1` is used: the latest version compatible with `numpy<2`. This version **cannot automatically download models at runtime**.
+- As such, any Spacy models must be **explicitly listed in `requirements.txt`** with versions compatible with 3.6.x.
+- These models are installed into the virtual environment during setup, ensuring the pipeline runs without runtime downloads.
+- Omitting compatible models will cause runtime errors when Spacy tries to load them.
