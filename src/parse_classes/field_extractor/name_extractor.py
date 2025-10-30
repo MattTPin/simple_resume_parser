@@ -23,7 +23,7 @@ class NameExtractor(FieldExtractor):
     SUPPORTED_EXTRACTION_METHODS = ["ner", "llm"]
     DEFAULT_EXTRACTION_METHOD = "ner"
     
-    REQUIRED_MODELS = {
+    REQUIRED_ML_MODELS = {
         "ner": {
             "spacy": [],
             "hf": ["dslim/bert-base-NER"],
